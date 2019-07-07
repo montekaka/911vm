@@ -2,7 +2,6 @@ const Person = {
   id: {
     primary: true,
     type: 'uuid',
-    required: true,
   },
   first_name: 'name',
   last_name: 'name',
@@ -13,6 +12,21 @@ const Person = {
   phone_number: {
     type: 'string',
     empty: true,
+  },
+  createdAt: {
+    type: 'datetime',
+    default: () => new Date,
+  },  
+  driverTraining: {
+    type: 'relationship',
+    relationship: 'DRIVERTRAINING',
+    direction: 'out',
+    properties: {
+      received: {
+        type: 'date',
+        default: () => new Date,
+      }
+    }
   },
 }
 
