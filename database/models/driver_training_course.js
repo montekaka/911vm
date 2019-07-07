@@ -4,7 +4,13 @@ const DriverTrainingCourse = {
       type: 'uuid',
       required: true,
     },
-    name: 'string'    
+    date: {
+      type: 'date',
+      default: () => new Date,
+    },
+    name: 'string',
+    first_name: 'name',
+    last_name: 'name',
   }
   
   module.exports = DriverTrainingCourse;
