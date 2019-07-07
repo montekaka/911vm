@@ -20,13 +20,7 @@ const Person = {
   driverTraining: {
     type: 'relationship',
     relationship: 'DRIVERTRAINING',
-    direction: 'out',
-    properties: {
-      received: {
-        type: 'date',
-        default: () => new Date,
-      }
-    }
+    direction: 'out',    
   },
 }
 
