@@ -1,28 +1,43 @@
-const fs = require('fs');
-const path = require('path');
+const importCSV = require('./importcsv');
+const queryBuilder = require('./queryBuilder');
+var Promise = require("bluebird");
 const Neode = require('neode');
-const fastcsv = require('fast-csv');
 const Person = require('../person');
+const DriverTrainingCourse = require('../driver_training_course');
 const instance = new Neode.fromEnv();
 
-// Define a Perons
+// Define models
 instance.model('Person', Person);
+instance.model('DriverTrainingCourse', DriverTrainingCourse);
 
-let result = [];
-fs.createReadStream(path.join(__dirname, 'volunteers.csv'))
-  .pipe(fastcsv.parse({ headers: true }))
-  .on('data', row => result.push(row))
-  .on('end', () => {
-    let queries = result.map((item) => {
-      return {'query': 'CREATE (p: Person {first_name: {first_name}, last_name: {last_name}, email_address: {email_address}, phone_number: {phone_number}}) RETURN p', 'params': item }
-    });
+// ['volunteers.csv','driver_training.csv']
 
-    instance.batch(queries)
-    .then((res) => {
-      instance.close();
-      console.log(`Imported total ${res.length} records`);
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  })
+importCSV('volunteers.csv', (queries) => {
+  instance.batch(queryBuilder['volunteers'](queries));
+});
+
+importCSV('driver_training.csv', (queries) => {
+  instance.batch(queryBuilder['driver_training'](queries));
+});
+
+// instance.close();
+
+// MATCH (person:Person {first_name: 'Todd', last_name: 'Baker'}), 
+// (course:DriverTrainingCourse {name: 'Written Test'})
+// CREATE (person)-[:DRIVERTRAINING{received:"3/16/2018"}]->(course)
+
+// MATCH (person:Person {first_name: 'Cody', last_name: 'Daig'}), 
+// (course:DriverTrainingCourse {name: 'Light Cones'})
+// CREATE (person)-[:DRIVERTRAINING{received:"1/28/2020"}]->(course)
+
+// instance.create('DriverTrainingCourse', {
+//   name: 'Written Test'
+// })
+
+// instance.first('Person', 'email_address', 'todd.baker@leu-rescue.org')
+// .then((person) => {
+//   return instance.first('DriverTrainingCourse','name', 'Written Test')
+//   .then((exam) => {
+//     return person.relateTo(exam, 'driverTraining', {received: new Date(2018, 2, 16)})
+//   })
+// })
