@@ -1,4 +1,5 @@
 const Neode = require('neode');
+const uuidv1 = require('uuid/v1');
 
 const schema = {
   id: {
@@ -48,6 +49,12 @@ const all = (cb) => {
 
 const insert = (data, cb) => {
   // return instance.create('Person', data);
+
+  let uuid = uuidv1();
+  data['uuid'] = uuid;
+  // TODO 
+  // check if there is the same uuid in the database
+  
   instance.batch([
     {query: 'CREATE (p: Person {first_name: {first_name}, last_name: {last_name}, email_address: {email_address}, phone_number: {phone_number}, class: {class}, uuid: {uuid}}) RETURN p', params: data}
   ])
@@ -60,8 +67,20 @@ const insert = (data, cb) => {
 }
 
 
+const get = (id, cb) => {
+  instance.cypher('MATCH (p:Person {uuid: {uuid}}) RETURN p', {uuid: id})
+  .then((res) => {
+    cb(null, res.records);
+  })
+  .catch((err) => {
+    cb(err, null);
+  });
+}
+
+
 module.exports = {
   schema:schema,
   insert: insert,
-  all: all
+  all: all,
+  get: get
 };

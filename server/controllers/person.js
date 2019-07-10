@@ -1,4 +1,3 @@
-const uuidv1 = require('uuid/v1');
 const person = require('./../models/Person');
 
 const get = (req, res) => {
@@ -20,7 +19,6 @@ const post = (req, res) => {
     'email_address': req.body.email_address,
     'phone_number': req.body.phone_number,
     'class': req.body['class'],
-    'uuid': uuidv1(),
   };
     
   person.insert(data, (err, result) => {
