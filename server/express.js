@@ -4,6 +4,7 @@ const path = require('path');
 const morgan = require('morgan');
 const connect = require('./utils/db');
 const config = require('./../config/config');
+const auth = require('./utils/auth');
 const personRouter = require('./resources/person/person.router');
 const certificationRouter = require('./resources/certification/certification.router');
 
@@ -15,6 +16,8 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 require('./routes.js')(app);
+app.post('/user/signup', auth.signup);
+app.post('/user/signin', auth.signin);
 
 app.use('/api/person', personRouter);
 app.use('/api/certification', certificationRouter);
