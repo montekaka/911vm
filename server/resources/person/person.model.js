@@ -7,6 +7,10 @@ const schema = {
     required: true,
     default: () => uuidv4(),
   },
+  password: {
+    type: 'string',
+    empty: true,    
+  },
   first_name: {
     type: 'name',
     required: true,
