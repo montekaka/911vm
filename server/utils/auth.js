@@ -79,7 +79,7 @@ const signin = (req, res) => {
     const _user = {
       id: user.get('id')  
     }
-    const token = newToken(user); 
+    const token = newToken(_user); 
     return res.status(201).json({
       data: {
         token: token,
@@ -92,7 +92,32 @@ const signin = (req, res) => {
   })  
 } 
 
+const protect = (req, res, next) => {  
+  if(!req.headers.authorization) return res.status(401).json({error_message: "No auth"});
+
+  const token = req.headers.authorization.split('Bearer ')[1];  
+  if(!token) {
+    return res.status(401).json({error_message: "No auth"});
+  }
+
+  verifyToken(token)
+  .then((payload) => {        
+    return neode.first('Person', {'id': payload['id']})
+  })
+  .then((user) => {
+    req.user = user;
+    next();
+  })
+  .catch((err) => {
+    console.log(err);
+    return res.status(401).json({error_message: "No auth"});
+  })
+  // next();
+}
+
+
 module.exports = {
   signup: signup,
-  signin: signin
+  signin: signin,
+  protect: protect
 }
