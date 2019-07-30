@@ -6,7 +6,17 @@ const get = (req, res) => {
   neode.cypher(query, {})
   .then((collection) => {    
     const resdata = collection.records.map((item) => {
-      return item['_fields'][0]['properties']
+      const properties = item['_fields'][0]['properties'];
+      return {
+        id: properties.id,
+        first_name: properties.first_name,
+        last_name: properties.last_name,
+        email_address: properties.email_address,
+        phone_number: properties.phone_number,
+        is_admin: properties.is_admin,
+        is_volunteer: properties.is_volunteer,
+        created_at: properties.created_at
+      }
     });
     res.status(202).json({data: resdata});
   })
