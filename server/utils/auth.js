@@ -105,7 +105,16 @@ const protect = (req, res, next) => {
     return neode.first('Person', {'id': payload['id']})
   })
   .then((user) => {
-    req.user = user;
+    req.user = {
+      id: user.get('id'),
+      first_name: user.get('first_name'),
+      last_name: user.get('last_name'),
+      email_address: user.get('email_address'),
+      phone_number: user.get('phone_number'),
+      is_admin: user.get('is_admin'),
+      is_volunteer: user.get('is_volunteer'),
+      created_at: user.get('created_at'),     
+    };
     next();
   })
   .catch((err) => {
