@@ -16,9 +16,11 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 require('./routes.js')(app);
-app.post('/user/signup', auth.signup);
-app.post('/user/signin', auth.signin);
+app.post('/v1/user/signup', auth.signup);
+app.post('/v1/user/signin', auth.signin);
 
+// Protect all endpoints under api
+app.use('/api', auth.protect);
 app.use('/api/person', personRouter);
 app.use('/api/certification', certificationRouter);
 
